@@ -1,6 +1,9 @@
 import datetime
 import sqlite3
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.utils import formatdate
 
 
 #指定のデータベースがなければ作成
@@ -84,6 +87,17 @@ def row_select_price(pname):
     for l in list:
         return l[2]
     conn.close()
+    
+
+#メールを送信する
+def send_mail(from_addr, to_addr, body_msg):
+    smtpobj = smtplib.SMTP('smtp.gmail.com', 587)
+    smtpobj.ehlo()
+    smtpobj.starttls()
+    smtpobj.ehlo()
+    smtpobj.login("mygmail@gmail.com", "mygmailpass")
+    smtpobj.sendmail(from_addr, to_addr, body_msg.encode('utf-8'))
+    smtpobj.close()
 
     
 if __name__ == "__main__":
@@ -95,10 +109,19 @@ if __name__ == "__main__":
 
     #insert_db(dbpath,"moumou",2550,dt_now)
 
-    select_db(dbpath)
+#    select_db(dbpath)
 
     #print(select_price(dbpath,"momou"))
 #    ここから
 #    row_select_db("row.db")
 #    print(row_select_price("ザバス(SAVAS) ミルクプロテイン 脂肪 0 ココア風味24本"))
-    
+
+
+#    toadd = "ishida@rinsendo.com"
+#    mymail = "ishida@rinsendo.com"
+#    s = "ザバス"
+#    row_shop = "モウモウ"
+#    bprice = 2550
+#    rprice = 2660
+#    bodytxt = f"{s}にて価格の変動がありました。\n{row_shop}:{bprice}→{rprice}"
+#    send_mail(mymail,mymail,bodytxt)

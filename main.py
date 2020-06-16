@@ -7,6 +7,9 @@ import os
 from creat_db import creat_table,insert_db,select_db,select_price,row_creat_table,row_insert_db,row_select_db,row_select_price
 import pandas as pd
 from read_csv import product_csv
+import smtplib
+from email.mime.text import MIMEText
+from email.utils import formatdate
 
 
 
@@ -72,8 +75,9 @@ for s,v in url.items():
     if bprice is None:
         print("初めてのデータ。")
     elif rprice != bprice:
-        print(f"{s}にて価格の変動がありました。")
-        print(f"{row_shop}:{bprice}→{rprice}")
+        mailadd = "mygmail@gmail.com"
+        mailtxt = f"{s}にて価格の変動がありました。\n{row_shop}:{bprice}→{rprice}"
+        send_mail(mailadd,mailadd,bodytxt)
             #       データベースに保存 
         row_insert_db(row_db,rshop,rprice,s,dt_now)
     else:

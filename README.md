@@ -8,7 +8,7 @@ amazon価格スクレイピングアプリケーション
  
 products.csvに登録したＵＲＬの店舗名と金額を取得してそれぞれのデータベースに保存。
 最低価格を取得。
-最低価格が変わっていれば通知して保存。
+最低価格が変わっていればメール通知して保存。
  
 # Requirement
  
@@ -18,6 +18,9 @@ products.csvに登録したＵＲＬの店舗名と金額を取得してそれ�
 * sqlite3
 * datetime
 * os
+* smtplib
+* email
+* pandas
 
 
  
@@ -30,7 +33,9 @@ pip install 〇〇
  
 # Usage
  
-DEMOの実行方法など、"hoge"の基本的な使い方を説明する
+そのあと、メールアドレスとパスワードを自分のgmail情報に書き換える。
+products.csvに取得したいamazonの商品名とＵＲＬを記載（プライムで絞り込んだもの）。
+main.pyをcronやタスクスケジューラで処理を自動化させる。
  
 ```bash
 python main.py
