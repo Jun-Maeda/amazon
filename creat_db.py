@@ -95,7 +95,7 @@ def send_mail(from_addr, to_addr, body_msg):
     smtpobj.ehlo()
     smtpobj.starttls()
     smtpobj.ehlo()
-    smtpobj.login("mygmail@gmail.com", "mygmailpass")
+    smtpobj.login("mymail@gmail.com", "mypassword")
     smtpobj.sendmail(from_addr, to_addr, body_msg.encode('utf-8'))
     smtpobj.close()
 

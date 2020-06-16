@@ -41,31 +41,34 @@ for s,v in url.items():
 
 
     #金額を取得
-    for a in soup.find_all('span', class_='olpOfferPrice'):
+    for a in soup.find_all('span', class_='a-size-large'):
     #    不要な記号を消して数字型に変換する
         pr = a.text.strip("￥ ")
         pn = pr.replace(",", "")
         price.append(int(pn))
+
 #    店舗名を取得
-    for a in soup.find_all('h3', class_='a-spacing-none olpSellerName'):
+    for a in soup.find_all('h3', class_='olpSellerName'):
         sn = a.text.strip("\n")
         sn = sn.strip(" ")
+        if sn == "":
+            sn = "amazon"
         shop.append(sn)
+
      
     
 #    取得したデータ分だけ処理
     for i in range(len(shop)):
         sname = shop[i]
-        sprice = int(price[i])
-        
+        sprice = price[i]
+#         データベースに保存
+        insert_db(dbname,sname,sprice,dt_now)
 #        その中で最安値を取得
-        if row_price == "" or (sprice < row_price):
+        if (row_price == "") or (sprice < row_price):
             row_shop = sname
             row_price = sprice
-        else:   
-#        データベースに保存
-            insert_db(dbname,sname,sprice,dt_now)
-        
+
+
         
     #    前回の最安値を取得
     bprice = row_select_price(s)
@@ -74,8 +77,9 @@ for s,v in url.items():
 
     if bprice is None:
         print("初めてのデータ。")
+        row_insert_db(row_db,rshop,rprice,s,dt_now)
     elif rprice != bprice:
-        mailadd = "mygmail@gmail.com"
+        mailadd = "mymail@gmail.com"
         mailtxt = f"{s}にて価格の変動がありました。\n{row_shop}:{bprice}→{rprice}"
         send_mail(mailadd,mailadd,bodytxt)
             #       データベースに保存 
