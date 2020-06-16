@@ -4,7 +4,7 @@ import csv
 import sqlite3
 import datetime
 import os
-from creat_db import creat_table,insert_db,select_db,select_price,row_creat_table,row_insert_db,row_select_db,row_select_price
+from creat_db import creat_table,insert_db,select_db,select_price,row_creat_table,row_insert_db,row_select_db,row_select_price,send_mail
 import pandas as pd
 from read_csv import product_csv
 import smtplib
@@ -34,7 +34,7 @@ for s,v in url.items():
     target_url = v
     dbname = f"data/{s}.db"
     r = requests.get(target_url)         #requestsを使って、ＵＲＬから情報を取得
-    soup = BeautifulSoup(r.text, 'lxml') #要素を抽出
+    soup = BeautifulSoup(r.text, 'html.parser') #要素を抽出
     
     creat_table(dbname)
     row_creat_table(row_db)
@@ -47,6 +47,7 @@ for s,v in url.items():
         pn = pr.replace(",", "")
         price.append(int(pn))
 
+
 #    店舗名を取得
     for a in soup.find_all('h3', class_='olpSellerName'):
         sn = a.text.strip("\n")
@@ -55,10 +56,11 @@ for s,v in url.items():
             sn = "amazon"
         shop.append(sn)
 
+
      
     
 #    取得したデータ分だけ処理
-    for i in range(len(shop)):
+    for i in range(len(price)):
         sname = shop[i]
         sprice = price[i]
 #         データベースに保存
@@ -79,9 +81,9 @@ for s,v in url.items():
         print("初めてのデータ。")
         row_insert_db(row_db,rshop,rprice,s,dt_now)
     elif rprice != bprice:
-        mailadd = "mymail@gmail.com"
+        mailadd = "myemail@gmail.com"
         mailtxt = f"{s}にて価格の変動がありました。\n{row_shop}:{bprice}→{rprice}"
-        send_mail(mailadd,mailadd,bodytxt)
+        send_mail(mailadd,mailadd,mailtxt)
             #       データベースに保存 
         row_insert_db(row_db,rshop,rprice,s,dt_now)
     else:
