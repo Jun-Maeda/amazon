@@ -10,7 +10,7 @@ from read_csv import product_csv
 import smtplib
 from email.mime.text import MIMEText
 from email.utils import formatdate
-
+import time
 
 
 
@@ -38,6 +38,8 @@ for s,v in url.items():
     
     creat_table(dbname)
     row_creat_table(row_db)
+    time.sleep(5)
+
 
 
     #金額を取得
@@ -46,21 +48,28 @@ for s,v in url.items():
         pr = a.text.strip("￥ ")
         pn = pr.replace(",", "")
         price.append(int(pn))
+        print(pn)
+        
+        time.sleep(2)
+        
 
 
 #    店舗名を取得
-    for a in soup.find_all('h3', class_='olpSellerName'):
+    for a in soup.find_all('h3'):
         sn = a.text.strip("\n")
         sn = sn.strip(" ")
         if sn == "":
             sn = "amazon"
         shop.append(sn)
+        print(sn)
+        
+        time.sleep(2)
 
 
      
     
 #    取得したデータ分だけ処理
-    for i in range(len(price)):
+    for i in range(len(shop)):
         sname = shop[i]
         sprice = price[i]
 #         データベースに保存
@@ -81,38 +90,16 @@ for s,v in url.items():
         print("初めてのデータ。")
         row_insert_db(row_db,rshop,rprice,s,dt_now)
     elif rprice != bprice:
-        mailadd = "myemail@gmail.com"
+        mailadd = "mymail@gmail.com"
         mailtxt = f"{s}にて価格の変動がありました。\n{row_shop}:{bprice}→{rprice}"
         send_mail(mailadd,mailadd,mailtxt)
             #       データベースに保存 
+        print(f"{s}で変動がありました")
         row_insert_db(row_db,rshop,rprice,s,dt_now)
     else:
-        print("変わりませんでした。")            
-
-
+        print("変わりませんでした。")
         
-    
-    
-    
-    
-    
-##ショップ名と値段をそれぞれ一緒のリストにする
-#shop_info = []    
-#for i in range(len(shop)):
-#    shop_info.append([shop[i],price[i]])
-#
-   
-    
-#    
-##csvで取得
-#f = open('some.csv', 'w')
-#
-#writer = csv.writer(f, lineterminator='\n')
-#
-#for i in shop_info:
-#    writer.writerow(i)
-#
-#f.close()
+ 
 
 
 
